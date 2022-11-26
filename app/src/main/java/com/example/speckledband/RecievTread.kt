@@ -6,7 +6,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-class RecievTread(val bSocket: BluetoothSocket) : Thread() {
+class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listener) : Thread() {
 
     var inStream: InputStream? = null
     var outStream: OutputStream? = null
@@ -31,8 +31,9 @@ class RecievTread(val bSocket: BluetoothSocket) : Thread() {
             try {
                 val size = inStream?.read(buf)
                 val massage = String(buf, 0, size!!)
-                Log.d("MyLog", "Massage $massage")
+                listener.onReceive(massage)
             } catch (i: IOException){
+                listener.onReceive("Lost connection")
                 break
             }
         }
@@ -44,5 +45,9 @@ class RecievTread(val bSocket: BluetoothSocket) : Thread() {
         } catch (i: IOException){
 
         }
+    }
+
+    interface Listener {
+        fun onReceive(message: String)
     }
 }

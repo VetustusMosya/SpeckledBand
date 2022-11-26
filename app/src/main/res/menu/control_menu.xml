@@ -10,5 +10,5 @@
         android:title="Bt List"
         android:orderInCategory="200"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_list_24"/>
+        android:icon="@drawable/ic_baseline_bluetooth_audio_24"/>
 </menu>

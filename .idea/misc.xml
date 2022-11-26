@@ -3,13 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/drawable/ic_baseline_bluetooth_audio_24.xml" value="0.242" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/drawable/ic_baseline_list_24.xml" value="0.242" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/drawable/ic_baseline_sync_alt_24.xml" value="0.242" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/layout/activity_control.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/layout/activity_list.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/layout/choose_color.xml" value="0.2" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/layout/list_item.xml" value="0.2734375" />
         <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/menu/control_menu.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.242" />
+        <entry key="..\:/Users/moise/AndroidStudioProjects/SpeckledBand/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.242" />
       </map>
     </option>
   </component>

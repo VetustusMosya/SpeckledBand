@@ -1,6 +1,7 @@
 package com.example.speckledband
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.pm.PackageManager
@@ -9,7 +10,8 @@ import androidx.core.app.ActivityCompat
 import java.io.IOException
 import java.util.*
 
-class ConnectThread(private val device: BluetoothDevice) : Thread() {
+@SuppressLint("MissingPermission")
+class ConnectThread(private val device: BluetoothDevice, val listener: RecievTread.Listener) : Thread() {
     val uuid = "00001101-0000-1000-8000-00805F9B34FB"
     var mSocket: BluetoothSocket? = null
     lateinit var rThread: RecievTread
@@ -22,22 +24,21 @@ class ConnectThread(private val device: BluetoothDevice) : Thread() {
     }
 
     override fun run() {
-        try {
-            Log.d("MyLog", "Connecting...")
-            mSocket?.connect()
-            Log.d("MyLog", "Connected")
-            rThread = RecievTread(mSocket!!)
-            rThread.start()
-        } catch (i:IOException){
-            Log.d("MyLog", "Not connected")
-            closeConnection()
-        }
+            try {
+                listener.onReceive("Connecting...")
+                mSocket?.connect()
+                listener.onReceive( "Connected :)")
+                rThread = RecievTread(mSocket!!, listener)
+                rThread.start()
+            } catch (i: IOException) {
+                listener.onReceive( "Not connected. Repeat")
+                closeConnection()
+            }
     }
 
     fun closeConnection(){
         try {
             mSocket?.close()
-            Log.d("MyLog", "closeConnected")
         } catch (i:IOException){
         }
     }
