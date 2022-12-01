@@ -4,16 +4,12 @@ import android.bluetooth.BluetoothManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.toColor
 import com.example.speckledband.databinding.ActivityControlBinding
 import com.nvt.color.ColorPickerDialog
-import java.io.IOException
 
 class ControlActivity : AppCompatActivity(), RecievTread.Listener {
     private lateinit var binding: ActivityControlBinding
@@ -29,6 +25,7 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         setContentView(binding.root)
         onListResult()
         init()
+
         binding.apply {
             btnOff.setOnClickListener{
                     btConnection.sendMassage("0")
@@ -40,21 +37,23 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                 val colorPicker = ColorPickerDialog(
                     this@ControlActivity,
                     rememberColor!!, // color init
-                    true, // true is show alpha
+                    false, // true is show alpha
                     object : ColorPickerDialog.OnColorPickerListener {
                         override fun onCancel(dialog: ColorPickerDialog?) {
                             // handle click button Cancel
                         }
-
                         override fun onOk(dialog: ColorPickerDialog?, colorPicker: Int) {
                             rememberColor = colorPicker
                             binding.btnCooseColor.setBackgroundColor(colorPicker)
-                            binding.textView3.text = colorPicker.toString()
-                            Log.d("MyLog", colorPicker.toUInt().toString(16))
-                            btConnection.sendMassage(colorPicker.toUInt().toString(16))
+                            val color = colorPicker.toUInt().toString(16)
+                            btConnection.sendMassage("0x${ color.substring(2, color.length) }")
                         }
                     })
                 colorPicker.show()
+            }
+            btnSkript.setOnClickListener {
+                val skripts = Intent(this@ControlActivity,SkriptsActivity::class.java)
+                startActivity(skripts)
             }
         }
 
@@ -109,6 +108,12 @@ private fun init(){
                 binding.btnOff.isEnabled = false
                 binding.btnCooseColor.isEnabled = false
             }
+        }
+    }
+
+    override fun getState(status: String) {
+        runOnUiThread {
+            binding.textView2.text = status
         }
     }
 }

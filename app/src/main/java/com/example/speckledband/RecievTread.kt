@@ -31,7 +31,7 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
             try {
                 val size = inStream?.read(buf)
                 val massage = String(buf, 0, size!!)
-                listener.onReceive(massage)
+                listener.getState(massage)
             } catch (i: IOException){
                 listener.onReceive("Lost connection")
                 break
@@ -49,5 +49,6 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
 
     interface Listener {
         fun onReceive(message: String)
+        fun getState(status: String)
     }
 }

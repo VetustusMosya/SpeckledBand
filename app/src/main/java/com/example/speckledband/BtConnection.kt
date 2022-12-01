@@ -20,7 +20,6 @@ class BtConnection(private val adapter: BluetoothAdapter, val listener: RecievTr
         try {
             cThread.rThread.sendMassage(message.toByteArray())
         } catch (i: IOException) {
-
         }
     }
 }
