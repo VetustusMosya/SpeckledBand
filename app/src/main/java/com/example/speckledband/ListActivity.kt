@@ -34,7 +34,6 @@ class ListActivity : AppCompatActivity(), RcAdapter.Listener {
         return true
     }
 
-//    инициализация блютуз сервиса
     private fun init(){
         val btManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         btAdapter = btManager.adapter

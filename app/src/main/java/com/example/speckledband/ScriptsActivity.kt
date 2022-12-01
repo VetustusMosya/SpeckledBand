@@ -2,14 +2,14 @@ package com.example.speckledband
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.speckledband.databinding.ActivityMainBinding
 import com.example.speckledband.databinding.ActvitySkriptBinding
 
-class SkriptsActivity : AppCompatActivity() {
+class ScriptsActivity : AppCompatActivity() {
     private lateinit var binding: ActvitySkriptBinding
-    private val adapter = SkriptsAdapter()
+    private val adapter = ScriptsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,12 +18,14 @@ class SkriptsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Scripts"
         init()
-        val script = Skripts(12, "First mother Facker")
-        adapter.addSkript(script)
+        addItems()
+        ScriptsAdapter.onItemClick = {
+
+        }
     }
 
     private fun init() = with(binding){
-        rcSkript.layoutManager = LinearLayoutManager(this@SkriptsActivity)
+        rcSkript.layoutManager = LinearLayoutManager(this@ScriptsActivity)
         rcSkript.adapter = adapter
     }
 
@@ -33,4 +35,12 @@ class SkriptsActivity : AppCompatActivity() {
         }
         return true
     }
+
+    fun addItems(){
+        adapter.addScript(Skripts(1, "Rainbow"))
+        adapter.addScript(Skripts(2, "Glory to Ruslan"))
+        adapter.addScript(Skripts(3, "Police"))
+        adapter.addScript(Skripts(4, "Random color"))
+    }
+
 }

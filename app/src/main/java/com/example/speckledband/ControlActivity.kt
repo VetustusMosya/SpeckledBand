@@ -2,14 +2,22 @@ package com.example.speckledband
 
 import android.bluetooth.BluetoothManager
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.SeekBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.example.speckledband.databinding.ActivityControlBinding
-import com.nvt.color.ColorPickerDialog
+import com.github.dhaval2404.colorpicker.ColorPickerDialog
+import com.github.dhaval2404.colorpicker.model.ColorShape
+
+//import com.github.dhaval2404.colorpicker.listener.ColorListener
+//import com.github.dhaval2404.colorpicker.model.ColorShape
+//import com.nvt.color.ColorPickerDialog
+
 
 class ControlActivity : AppCompatActivity(), RecievTread.Listener {
     private lateinit var binding: ActivityControlBinding
@@ -31,30 +39,37 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                     btConnection.sendMassage("0")
             }
             btnOn.setOnClickListener{
-                    btConnection.sendMassage("1")
+                    val bri = seekBar4.progress
+                    btConnection.sendMassage("$bri")
             }
             btnCooseColor.setOnClickListener {
-                val colorPicker = ColorPickerDialog(
-                    this@ControlActivity,
-                    rememberColor!!, // color init
-                    false, // true is show alpha
-                    object : ColorPickerDialog.OnColorPickerListener {
-                        override fun onCancel(dialog: ColorPickerDialog?) {
-                            // handle click button Cancel
-                        }
-                        override fun onOk(dialog: ColorPickerDialog?, colorPicker: Int) {
-                            rememberColor = colorPicker
-                            binding.btnCooseColor.setBackgroundColor(colorPicker)
-                            val color = colorPicker.toUInt().toString(16)
-                            btConnection.sendMassage("0x${ color.substring(2, color.length) }")
-                        }
-                    })
-                colorPicker.show()
+                ColorPickerDialog
+                    .Builder(this@ControlActivity)   // Pass Activity Instance
+                    .setTitle("Choose your color")    // Default "Choose Color"
+                    .setColorShape(ColorShape.CIRCLE)// Default ColorShape.CIRCLE
+                    .setDefaultColor(rememberColor!!)
+                    .setPositiveButton("Ok")
+                    .setNegativeButton("Cancel")// Pass Default Color
+                    .setColorListener { color, colorHex ->
+                        rememberColor = color
+                        binding.btnCooseColor.setBackgroundColor(color)
+                        btConnection.sendMassage("0x${colorHex.slice(1..6)}")
+                    }
+                    .show()
             }
             btnSkript.setOnClickListener {
-                val skripts = Intent(this@ControlActivity,SkriptsActivity::class.java)
+                val skripts = Intent(this@ControlActivity,ScriptsActivity::class.java)
                 startActivity(skripts)
             }
+            seekBar4.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
+                override fun onStartTrackingTouch(p0: SeekBar?) {}
+                override fun onStopTrackingTouch(seek: SeekBar?) {
+                    if (seek != null) {
+                        btConnection.sendMassage("${seek.progress}")
+                    }
+                }
+            })
         }
 
     }
@@ -103,10 +118,12 @@ private fun init(){
                 binding.btnOn.isEnabled = true
                 binding.btnOff.isEnabled = true
                 binding.btnCooseColor.isEnabled = true
+                binding.seekBar4.visibility = View.VISIBLE
             } else {
                 binding.btnOn.isEnabled = false
                 binding.btnOff.isEnabled = false
                 binding.btnCooseColor.isEnabled = false
+                binding.seekBar4.visibility = View.INVISIBLE
             }
         }
     }
