@@ -1,27 +1,18 @@
 package com.example.speckledband
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.speckledband.databinding.SkriptItemBinding
 
-class ScriptsAdapter: RecyclerView.Adapter<ScriptsAdapter.ScriptHolder>() {
-    val scriptList = ArrayList<Skripts>()
-    lateinit var btConnection: BtConnection
+class ScriptsAdapter(private val scriptList:ArrayList<Scripts>):
+    RecyclerView.Adapter<ScriptsAdapter.ScriptHolder>() {
 
-    var onItemClick : ((Skripts) -> Unit)? = null
+    var onItemClick : ((Scripts) -> Unit)? = null
 
-    class ScriptHolder(item: View): RecyclerView.ViewHolder(item) {
-        val binding = SkriptItemBinding.bind(item)
-        fun bind(script: Skripts) = with(binding){
-            skriptName.text = script.name
-            itemView.setOnClickListener {
-
-            }
-        }
-
+    class ScriptHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val textView: TextView = itemView.findViewById(R.id.skriptName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScriptHolder {
@@ -30,22 +21,16 @@ class ScriptsAdapter: RecyclerView.Adapter<ScriptsAdapter.ScriptHolder>() {
     }
 
     override fun onBindViewHolder(holder: ScriptHolder, position: Int) {
-        holder.bind(scriptList[position])
         val script = scriptList[position]
+        holder.textView.text = script.name
+
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(script)
-//            btConnection.sendMassage("s")
+
         }
     }
 
     override fun getItemCount(): Int {
         return scriptList.size
     }
-
-    fun addScript(script: Skripts){
-        scriptList.add(script)
-//        notifyDataSetChanged()
-    }
-
 
 }

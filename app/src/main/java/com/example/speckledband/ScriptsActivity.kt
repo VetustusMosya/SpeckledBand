@@ -1,32 +1,43 @@
 package com.example.speckledband
 
+import android.bluetooth.BluetoothManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.speckledband.databinding.ActvitySkriptBinding
+import androidx.recyclerview.widget.RecyclerView
 
-class ScriptsActivity : AppCompatActivity() {
-    private lateinit var binding: ActvitySkriptBinding
-    private val adapter = ScriptsAdapter()
+class ScriptsActivity : AppCompatActivity(), RecievTread.Listener{
+    lateinit var btConnection: BtConnection
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var scriptList : ArrayList<Scripts>
+    private lateinit var scriptsAdapter: ScriptsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActvitySkriptBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.actvity_skript)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Scripts"
         init()
+
+        recyclerView = findViewById(R.id.rcScript)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        scriptList = ArrayList()
         addItems()
-        ScriptsAdapter.onItemClick = {
+        scriptsAdapter = ScriptsAdapter(scriptList)
+        recyclerView.adapter = scriptsAdapter
+
+        scriptsAdapter.onItemClick = {
 
         }
     }
 
-    private fun init() = with(binding){
-        rcSkript.layoutManager = LinearLayoutManager(this@ScriptsActivity)
-        rcSkript.adapter = adapter
+    private fun init(){
+        val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+        val btAdapter = btManager.adapter
+        btConnection = BtConnection(btAdapter, this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -37,10 +48,18 @@ class ScriptsActivity : AppCompatActivity() {
     }
 
     fun addItems(){
-        adapter.addScript(Skripts(1, "Rainbow"))
-        adapter.addScript(Skripts(2, "Glory to Ruslan"))
-        adapter.addScript(Skripts(3, "Police"))
-        adapter.addScript(Skripts(4, "Random color"))
+        scriptList.add(Scripts(1, "Rainbow"))
+        scriptList.add(Scripts(2, "Glory to Ruslan"))
+        scriptList.add(Scripts(3, "Police"))
+        scriptList.add(Scripts(4, "Random color"))
+    }
+
+    override fun onReceive(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getState(status: String) {
+        TODO("Not yet implemented")
     }
 
 }

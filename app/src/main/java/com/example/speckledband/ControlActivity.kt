@@ -14,11 +14,6 @@ import com.example.speckledband.databinding.ActivityControlBinding
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
 
-//import com.github.dhaval2404.colorpicker.listener.ColorListener
-//import com.github.dhaval2404.colorpicker.model.ColorShape
-//import com.nvt.color.ColorPickerDialog
-
-
 class ControlActivity : AppCompatActivity(), RecievTread.Listener {
     private lateinit var binding: ActivityControlBinding
     private lateinit var actListLauncher: ActivityResultLauncher<Intent>
@@ -44,12 +39,12 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
             }
             btnCooseColor.setOnClickListener {
                 ColorPickerDialog
-                    .Builder(this@ControlActivity)   // Pass Activity Instance
-                    .setTitle("Choose your color")    // Default "Choose Color"
-                    .setColorShape(ColorShape.CIRCLE)// Default ColorShape.CIRCLE
+                    .Builder(this@ControlActivity)
+                    .setTitle("Choose your color")
+                    .setColorShape(ColorShape.CIRCLE)
                     .setDefaultColor(rememberColor!!)
                     .setPositiveButton("Ok")
-                    .setNegativeButton("Cancel")// Pass Default Color
+                    .setNegativeButton("Cancel")
                     .setColorListener { color, colorHex ->
                         rememberColor = color
                         binding.btnCooseColor.setBackgroundColor(color)
@@ -73,7 +68,6 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         }
 
     }
-
 
 private fun init(){
         val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
