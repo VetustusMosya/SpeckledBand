@@ -42,6 +42,8 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
     fun sendMassage(byteArray: ByteArray){
         try {
             outStream?.write(byteArray)
+
+
         } catch (i: IOException){
 
         }

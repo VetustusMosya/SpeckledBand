@@ -2,17 +2,22 @@ package com.example.speckledband
 
 import android.bluetooth.BluetoothManager
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.speckledband.databinding.ActivityControlBinding
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
+
+//Log.d("MyLog", "$script")
 
 class ControlActivity : AppCompatActivity(), RecievTread.Listener {
     private lateinit var binding: ActivityControlBinding
@@ -26,16 +31,31 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         super.onCreate(savedInstanceState)
         binding = ActivityControlBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         onListResult()
         init()
 
+        val scriptLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){  result: ActivityResult ->
+
+            if(result.resultCode == RESULT_OK){
+                val script = result.data?.getParcelableExtra<Scripts>("script")
+                val scId = script?.id
+                btConnection.sendMassage("s$scId")
+                binding.informText.text = "Script: ${script?.name}"
+            }
+        }
+
         binding.apply {
             btnOff.setOnClickListener{
-                    btConnection.sendMassage("0")
+                btConnection.sendMassage("t0")
+                binding.informText.text = "Band is off"
+                binding.informLayout.setBackgroundColor(Color.parseColor("#2F2F2F"))
             }
             btnOn.setOnClickListener{
-                    val bri = seekBar4.progress
-                    btConnection.sendMassage("$bri")
+                val bri = seekBar4.progress
+                btConnection.sendMassage("t$bri")
+                binding.informText.text = "Color: #${rememberColor}"
+
             }
             btnCooseColor.setOnClickListener {
                 ColorPickerDialog
@@ -47,26 +67,30 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                     .setNegativeButton("Cancel")
                     .setColorListener { color, colorHex ->
                         rememberColor = color
-                        binding.btnCooseColor.setBackgroundColor(color)
+                        binding.informLayout.setBackgroundColor(color)
+                        binding.informText.text = "Color: $colorHex"
                         btConnection.sendMassage("0x${colorHex.slice(1..6)}")
                     }
                     .show()
             }
             btnSkript.setOnClickListener {
-                val skripts = Intent(this@ControlActivity,ScriptsActivity::class.java)
-                startActivity(skripts)
+                scriptLauncher.launch(Intent(this@ControlActivity, ScriptsActivity::class.java))
             }
             seekBar4.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener{
-                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
-                override fun onStartTrackingTouch(p0: SeekBar?) {}
-                override fun onStopTrackingTouch(seek: SeekBar?) {
-                    if (seek != null) {
+                override fun onProgressChanged(seek: SeekBar?, p1: Int, p2: Boolean) {
+                    if (seek != null && (seek.progress % 10 == 0)) {
                         btConnection.sendMassage("${seek.progress}")
+                        Log.d("MyLog", "${seek.progress}")
                     }
+                }
+                override fun onStartTrackingTouch(seek: SeekBar?) {
+
+                }
+                override fun onStopTrackingTouch(seek: SeekBar?) {
+
                 }
             })
         }
-
     }
 
 private fun init(){
@@ -112,11 +136,13 @@ private fun init(){
                 binding.btnOn.isEnabled = true
                 binding.btnOff.isEnabled = true
                 binding.btnCooseColor.isEnabled = true
+                binding.btnSkript.isEnabled = true
                 binding.seekBar4.visibility = View.VISIBLE
             } else {
                 binding.btnOn.isEnabled = false
                 binding.btnOff.isEnabled = false
                 binding.btnCooseColor.isEnabled = false
+                binding.btnSkript.isEnabled = false
                 binding.seekBar4.visibility = View.INVISIBLE
             }
         }
@@ -124,7 +150,7 @@ private fun init(){
 
     override fun getState(status: String) {
         runOnUiThread {
-            binding.textView2.text = status
+
         }
     }
 }

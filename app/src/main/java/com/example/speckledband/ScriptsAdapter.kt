@@ -1,9 +1,11 @@
 package com.example.speckledband
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
 class ScriptsAdapter(private val scriptList:ArrayList<Scripts>):
@@ -23,14 +25,12 @@ class ScriptsAdapter(private val scriptList:ArrayList<Scripts>):
     override fun onBindViewHolder(holder: ScriptHolder, position: Int) {
         val script = scriptList[position]
         holder.textView.text = script.name
-
         holder.itemView.setOnClickListener {
-
+            onItemClick?.invoke(script)
         }
     }
 
     override fun getItemCount(): Int {
         return scriptList.size
     }
-
 }

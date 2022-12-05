@@ -1,15 +1,14 @@
 package com.example.speckledband
 
-import android.bluetooth.BluetoothManager
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class ScriptsActivity : AppCompatActivity(), RecievTread.Listener{
-    lateinit var btConnection: BtConnection
+
+class ScriptsActivity : AppCompatActivity(){
     private lateinit var recyclerView: RecyclerView
     private lateinit var scriptList : ArrayList<Scripts>
     private lateinit var scriptsAdapter: ScriptsAdapter
@@ -19,8 +18,6 @@ class ScriptsActivity : AppCompatActivity(), RecievTread.Listener{
         setContentView(R.layout.actvity_skript)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Scripts"
-        init()
-
         recyclerView = findViewById(R.id.rcScript)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -30,14 +27,12 @@ class ScriptsActivity : AppCompatActivity(), RecievTread.Listener{
         recyclerView.adapter = scriptsAdapter
 
         scriptsAdapter.onItemClick = {
+            val i = Intent()
+            i.putExtra("script", it)
 
+            setResult(RESULT_OK, i)
+            finish()
         }
-    }
-
-    private fun init(){
-        val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
-        val btAdapter = btManager.adapter
-        btConnection = BtConnection(btAdapter, this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -52,14 +47,6 @@ class ScriptsActivity : AppCompatActivity(), RecievTread.Listener{
         scriptList.add(Scripts(2, "Glory to Ruslan"))
         scriptList.add(Scripts(3, "Police"))
         scriptList.add(Scripts(4, "Random color"))
-    }
-
-    override fun onReceive(message: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getState(status: String) {
-        TODO("Not yet implemented")
     }
 
 }
