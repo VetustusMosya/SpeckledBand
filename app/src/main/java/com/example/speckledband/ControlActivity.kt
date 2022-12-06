@@ -1,7 +1,9 @@
 package com.example.speckledband
 
 import android.bluetooth.BluetoothManager
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +27,8 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
     lateinit var btConnection: BtConnection
     private var listItem: ListItem? = null
     private var rememberMac: String? = "00:21:13:00:60:87"
-    private var rememberColor: Int? = -1
+    private var rememberColor: Int? = null
+    private var pref : SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +37,11 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
 
         onListResult()
         init()
+        pref = getSharedPreferences("table", Context.MODE_PRIVATE)
+        rememberColor = pref?.getInt("color", -1)!!
+        binding.seekBar4.progress = pref?.getInt("brightness", 40)!!
 
         val scriptLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){  result: ActivityResult ->
-
             if(result.resultCode == RESULT_OK){
                 val script = result.data?.getParcelableExtra<Scripts>("script")
                 val scId = script?.id
@@ -46,16 +51,20 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         }
 
         binding.apply {
+            btnOn.setOnClickListener{
+                btConnection.sendMassage("${seekBar4.progress}")
+                binding.btnOn.isEnabled = false
+                binding.btnOff.isEnabled = true
+                binding.seekBar4.visibility = View.VISIBLE
+                binding.informText.text = "Band is on"
+                binding.informLayout.setBackgroundColor(rememberColor!!)
+            }
             btnOff.setOnClickListener{
                 btConnection.sendMassage("t0")
                 binding.informText.text = "Band is off"
+                binding.btnOn.isEnabled = true
+                binding.btnOff.isEnabled = false
                 binding.informLayout.setBackgroundColor(Color.parseColor("#2F2F2F"))
-            }
-            btnOn.setOnClickListener{
-                val bri = seekBar4.progress
-                btConnection.sendMassage("t$bri")
-                binding.informText.text = "Color: #${rememberColor}"
-
             }
             btnCooseColor.setOnClickListener {
                 ColorPickerDialog
@@ -70,6 +79,7 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                         binding.informLayout.setBackgroundColor(color)
                         binding.informText.text = "Color: $colorHex"
                         btConnection.sendMassage("0x${colorHex.slice(1..6)}")
+                        saveData(color, "color")
                     }
                     .show()
             }
@@ -78,22 +88,21 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
             }
             seekBar4.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seek: SeekBar?, p1: Int, p2: Boolean) {
-                    if (seek != null && (seek.progress % 10 == 0)) {
-                        btConnection.sendMassage("${seek.progress}")
-                        Log.d("MyLog", "${seek.progress}")
-                    }
+
                 }
                 override fun onStartTrackingTouch(seek: SeekBar?) {
 
                 }
                 override fun onStopTrackingTouch(seek: SeekBar?) {
-
+                    btConnection.sendMassage("${seek?.progress}")
+                    Log.d("MyLog", "${seek?.progress}")
+                    saveData(seek?.progress!!, "brightness")
                 }
             })
         }
     }
 
-private fun init(){
+    private fun init(){
         val btManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         val btAdapter = btManager.adapter
         btConnection = BtConnection(btAdapter, this)
@@ -134,10 +143,8 @@ private fun init(){
             binding.textView.text = message
             if(message == "Connected :)"){
                 binding.btnOn.isEnabled = true
-                binding.btnOff.isEnabled = true
                 binding.btnCooseColor.isEnabled = true
                 binding.btnSkript.isEnabled = true
-                binding.seekBar4.visibility = View.VISIBLE
             } else {
                 binding.btnOn.isEnabled = false
                 binding.btnOff.isEnabled = false
@@ -148,9 +155,14 @@ private fun init(){
         }
     }
 
+    fun saveData(value: Int, key: String){
+        val editor = pref?.edit()
+        editor?.putInt(key, value)
+        editor?.apply()
+    }
+
     override fun getState(status: String) {
         runOnUiThread {
-
         }
     }
 }

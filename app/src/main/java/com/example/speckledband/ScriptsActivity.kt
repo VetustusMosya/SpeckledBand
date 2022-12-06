@@ -29,7 +29,6 @@ class ScriptsActivity : AppCompatActivity(){
         scriptsAdapter.onItemClick = {
             val i = Intent()
             i.putExtra("script", it)
-
             setResult(RESULT_OK, i)
             finish()
         }
@@ -42,11 +41,12 @@ class ScriptsActivity : AppCompatActivity(){
         return true
     }
 
-    fun addItems(){
+    private fun addItems(){
         scriptList.add(Scripts(1, "Rainbow"))
         scriptList.add(Scripts(2, "Glory to Ruslan"))
         scriptList.add(Scripts(3, "Police"))
         scriptList.add(Scripts(4, "Random color"))
+        scriptList.add(Scripts(5, "Flashing"))
     }
 
 }
