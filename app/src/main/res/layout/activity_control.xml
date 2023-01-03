@@ -7,46 +7,49 @@
     android:layout_height="match_parent"
     android:clickable="false"
     android:padding="32dp"
-    tools:context=".ControlActivity">
+    tools:context=".MainActivity">
 
     <Button
         android:id="@+id/btnCooseColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="20dp"
         android:enabled="false"
         android:text="Choose color"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayoutOn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutBrightness" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="20dp"
         android:text="Let's connect to bluetooth device"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSkript"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/informLayout" />
 
     <LinearLayout
         android:id="@+id/linearLayoutBrightness"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCooseColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSkript">
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:paddingStart="16dp"
             android:text="Brightness:"
             android:textStyle="bold" />
 
@@ -57,7 +60,6 @@
             android:layout_weight="1"
             android:max="255"
             android:min="1"
-            android:paddingEnd="0dp"
             android:progress="20"
             android:visibility="invisible" />
     </LinearLayout>
@@ -66,11 +68,12 @@
         android:id="@+id/linearLayoutOn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCooseColor">
 
         <Button
             android:id="@+id/btnOn"
@@ -92,12 +95,12 @@
         android:id="@+id/btnSkript"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="20dp"
         android:enabled="false"
         android:text="Choose skript"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayoutBrightness"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <LinearLayout
         android:id="@+id/informLayout"
@@ -106,7 +109,6 @@
         android:background="#2F2F2F"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

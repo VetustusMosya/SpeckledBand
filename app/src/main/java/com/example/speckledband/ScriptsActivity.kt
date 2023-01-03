@@ -16,11 +16,14 @@ class ScriptsActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actvity_skript)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Scripts"
         recyclerView = findViewById(R.id.rcScript)
+
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
         scriptList = ArrayList()
         addItems()
         scriptsAdapter = ScriptsAdapter(scriptList)

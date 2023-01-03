@@ -15,13 +15,11 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
         try {
             inStream = bSocket.inputStream
         } catch (i: IOException){
-
         }
 
         try {
             outStream = bSocket.outputStream
         } catch (i: IOException){
-
         }
     }
 
@@ -30,8 +28,8 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
         while (true){
             try {
                 val size = inStream?.read(buf)
-                val massage = String(buf, 0, size!!)
-                listener.getState(massage)
+//                val massage = String(buf, 0, size!!)
+//                listener.getState(massage)
             } catch (i: IOException){
                 listener.onReceive("Lost connection")
                 break
@@ -42,15 +40,12 @@ class RecievTread(val bSocket: BluetoothSocket, val listener: RecievTread.Listen
     fun sendMassage(byteArray: ByteArray){
         try {
             outStream?.write(byteArray)
-
-
         } catch (i: IOException){
-
         }
     }
 
     interface Listener {
         fun onReceive(message: String)
-        fun getState(status: String)
+//        fun getState(status: String)
     }
 }

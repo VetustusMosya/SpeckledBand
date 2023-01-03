@@ -5,7 +5,7 @@ import android.util.Log
 import java.io.IOException
 
 class BtConnection(private val adapter: BluetoothAdapter, val listener: RecievTread.Listener) {
-    lateinit var cThread: ConnectThread
+    private lateinit var cThread: ConnectThread
 
     fun connect(mac: String ){
         if (adapter.isEnabled && mac.isNotEmpty()) {
@@ -20,9 +20,7 @@ class BtConnection(private val adapter: BluetoothAdapter, val listener: RecievTr
     fun sendMassage(message: String){
         try {
             cThread.rThread.sendMassage(message.toByteArray())
-            Log.d("MyLog", "Scented")
         } catch (i: IOException) {
-            Log.d("MyLog", "Err in sendMassage")
         }
     }
 }

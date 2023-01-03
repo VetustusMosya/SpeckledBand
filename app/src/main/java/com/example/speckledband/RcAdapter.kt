@@ -32,7 +32,6 @@ class RcAdapter( private val listener: Listener) : ListAdapter<ListItem, RcAdapt
         override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
             return oldItem.mac == newItem.mac
         }
-
         override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
             return oldItem == newItem
         }

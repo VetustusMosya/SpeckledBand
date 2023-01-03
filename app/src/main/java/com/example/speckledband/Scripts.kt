@@ -13,7 +13,6 @@ data class Scripts(
         parcel.readString()!!
     ) {
     }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(name)

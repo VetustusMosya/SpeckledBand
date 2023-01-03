@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,9 +20,10 @@ import com.github.dhaval2404.colorpicker.model.ColorShape
 
 //Log.d("MyLog", "$script")
 
-class ControlActivity : AppCompatActivity(), RecievTread.Listener {
+class MainActivity : AppCompatActivity(), RecievTread.Listener {
     private lateinit var binding: ActivityControlBinding
     private lateinit var actListLauncher: ActivityResultLauncher<Intent>
+    private lateinit var scriptLauncher: ActivityResultLauncher<Intent>
     lateinit var btConnection: BtConnection
     private var listItem: ListItem? = null
     private var rememberMac: String? = "00:21:13:00:60:87"
@@ -36,19 +36,12 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         setContentView(binding.root)
 
         onListResult()
+        onScriptListResult()
         init()
+
         pref = getSharedPreferences("table", Context.MODE_PRIVATE)
         rememberColor = pref?.getInt("color", -1)!!
         binding.seekBar4.progress = pref?.getInt("brightness", 40)!!
-
-        val scriptLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){  result: ActivityResult ->
-            if(result.resultCode == RESULT_OK){
-                val script = result.data?.getParcelableExtra<Scripts>("script")
-                val scId = script?.id
-                btConnection.sendMassage("s$scId")
-                binding.informText.text = "Script: ${script?.name}"
-            }
-        }
 
         binding.apply {
             btnOn.setOnClickListener{
@@ -64,11 +57,12 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                 binding.informText.text = "Band is off"
                 binding.btnOn.isEnabled = true
                 binding.btnOff.isEnabled = false
+                binding.seekBar4.visibility = View.INVISIBLE
                 binding.informLayout.setBackgroundColor(Color.parseColor("#2F2F2F"))
             }
             btnCooseColor.setOnClickListener {
                 ColorPickerDialog
-                    .Builder(this@ControlActivity)
+                    .Builder(this@MainActivity)
                     .setTitle("Choose your color")
                     .setColorShape(ColorShape.CIRCLE)
                     .setDefaultColor(rememberColor!!)
@@ -84,18 +78,14 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
                     .show()
             }
             btnSkript.setOnClickListener {
-                scriptLauncher.launch(Intent(this@ControlActivity, ScriptsActivity::class.java))
+                scriptLauncher.launch(Intent(this@MainActivity, ScriptsActivity::class.java))
             }
             seekBar4.setOnSeekBarChangeListener( object : SeekBar.OnSeekBarChangeListener{
-                override fun onProgressChanged(seek: SeekBar?, p1: Int, p2: Boolean) {
+                override fun onProgressChanged(seek: SeekBar?, p1: Int, p2: Boolean) {}
+                override fun onStartTrackingTouch(seek: SeekBar?) {}
 
-                }
-                override fun onStartTrackingTouch(seek: SeekBar?) {
-
-                }
                 override fun onStopTrackingTouch(seek: SeekBar?) {
                     btConnection.sendMassage("${seek?.progress}")
-                    Log.d("MyLog", "${seek?.progress}")
                     saveData(seek?.progress!!, "brightness")
                 }
             })
@@ -113,6 +103,17 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         return super.onCreateOptionsMenu(menu)
     }
 
+
+    private fun onListResult(){
+        actListLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()){
+            if (it.resultCode == RESULT_OK){
+                listItem = it.data?.getSerializableExtra(ListActivity.DEVICE_KEY) as ListItem
+                btConnection.connect(listItem!!.mac)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.id_list){
             actListLauncher.launch(Intent(this, ListActivity::class.java))
@@ -128,14 +129,18 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onListResult(){
-        actListLauncher = registerForActivityResult(
+
+    private fun onScriptListResult(){
+        scriptLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()){
-            if (it.resultCode == RESULT_OK){
-                listItem = it.data?.getSerializableExtra(ListActivity.DEVICE_KEY) as ListItem
+                result: ActivityResult ->
+            if(result.resultCode == RESULT_OK){
+                val script = result.data?.getParcelableExtra<Scripts>("script")
+                val scId = script?.id
+                btConnection.sendMassage("s$scId")
+                binding.informText.text = "Script: ${script?.name}"
             }
         }
-
     }
 
     override fun onReceive(message: String) {
@@ -155,15 +160,15 @@ class ControlActivity : AppCompatActivity(), RecievTread.Listener {
         }
     }
 
-    fun saveData(value: Int, key: String){
+    private fun saveData(value: Int, key: String){
         val editor = pref?.edit()
         editor?.putInt(key, value)
         editor?.apply()
     }
 
-    override fun getState(status: String) {
-        runOnUiThread {
-        }
-    }
+    //override fun getState(status: String) {
+    //    runOnUiThread {
+    //    }
+    //}
 }
 

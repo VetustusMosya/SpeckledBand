@@ -12,8 +12,8 @@ import java.util.*
 
 @SuppressLint("MissingPermission")
 class ConnectThread(private val device: BluetoothDevice, val listener: RecievTread.Listener) : Thread() {
-    val uuid = "00001101-0000-1000-8000-00805F9B34FB"
-    var mSocket: BluetoothSocket? = null
+    private val uuid = "00001101-0000-1000-8000-00805F9B34FB"
+    private var mSocket: BluetoothSocket? = null
     lateinit var rThread: RecievTread
 
     init {
@@ -36,7 +36,7 @@ class ConnectThread(private val device: BluetoothDevice, val listener: RecievTre
             }
     }
 
-    fun closeConnection(){
+    private fun closeConnection(){
         try {
             mSocket?.close()
         } catch (i:IOException){
